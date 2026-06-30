@@ -1,0 +1,29 @@
+title: Port Scan detectado via iptables (FIREWALL_DROP)
+id: 7c1f2a90-3b6e-4e2a-9c2a-fluxolab0001
+status: experimental
+description: >
+  Detecta múltiplos pacotes bloqueados pela mesma origem em janela curta,
+  padrão típico de varredura de portas (network service scanning).
+author: Diego Machado
+date: 2026/06/29
+references:
+  - https://attack.mitre.org/techniques/T1046/
+logsource:
+  product: linux
+  service: iptables
+detection:
+  selection:
+    message|contains: 'FIREWALL_DROP:'
+  timeframe: 60s
+  condition: selection | count(dst_port) by src_ip > 15
+fields:
+  - src_ip
+  - dst_ip
+  - dst_port
+falsepositives:
+  - Scanners de vulnerabilidade autorizados (ex.: Nessus/OpenVAS em janela de teste)
+  - Health checks ou monitoração mal configurados batendo em portas fechadas
+level: high
+tags:
+  - attack.discovery
+  - attack.t1046

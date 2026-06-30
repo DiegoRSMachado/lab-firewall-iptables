@@ -1,0 +1,27 @@
+<!--
+  local_decoder.xml  ·  Decoder para logs do iptables com prefixo FIREWALL_DROP
+  Caminho no manager: /var/ossec/etc/decoders/local_decoder.xml
+  Extrai srcip, dstip, protocol e dstport para uso nas regras de correlação.
+-->
+
+<decoder name="firewall-drop">
+  <prematch>FIREWALL_DROP: </prematch>
+</decoder>
+
+<decoder name="firewall-drop-addr">
+  <parent>firewall-drop</parent>
+  <regex offset="after_prematch">SRC=(\S+) DST=(\S+)</regex>
+  <order>srcip,dstip</order>
+</decoder>
+
+<decoder name="firewall-drop-proto">
+  <parent>firewall-drop</parent>
+  <regex>PROTO=(\w+)</regex>
+  <order>protocol</order>
+</decoder>
+
+<decoder name="firewall-drop-dport">
+  <parent>firewall-drop</parent>
+  <regex>DPT=(\d+)</regex>
+  <order>dstport</order>
+</decoder>
